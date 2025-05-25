@@ -1,8 +1,26 @@
-To Start the project
+# 🚀 Getting Started
 
-**0**. Create .env file copying from .demoenv and asking Harsh Actual Credential
-**1**. Run pip install -r requirements.txt
-**2**. Run uvicorn main:app --reload
-**3**. Open localhost:8000/docs for UI
+Follow the steps below to set up and run the project locally.
 
-Any Commit made should include a clear and concise message summarizing the purpose and changes introduced.
+## ✅ Setup Instructions
+
+**0.** Create a `.env` file by copying from `.demoenv`.  
+Ask **Harsh** for the actual credentials to fill in.
+
+**1.** Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+**2.** Start the development server:
+
+```bash
+uvicorn main:app --reload
+```
+
+**3.** Access the interactive API docs at: localhost:8000/docs
+
+Any commit made should include a clear and concise message summarizing:
+
+The purpose of the changes and a brief overview of what was modified or added.
