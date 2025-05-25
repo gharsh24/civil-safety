@@ -4,6 +4,19 @@ Follow the steps below to set up and run the project locally.
 
 ## ✅ Setup Instructions
 
+For Creating virtual environment
+
+```bash
+python -m venv venv
+ .\venv\Scripts\Activate.ps1
+```
+
+Now do all pip install if reqd and if some new package added do
+
+```bash
+pip freeze > requirements.txt
+```
+
 **0.** Create a `.env` file by copying from `.demoenv`.  
 Ask **Harsh** for the actual credentials to fill in.
 
