@@ -1,11 +1,12 @@
 # main.py
 from fastapi import FastAPI
-from handlers import report, alerts, education, resources,emergency,isAdmin  # import all route modules
+from handlers import report, alerts, education, resources,emergency,isAdmin,findNearest  # import all route modules
 
 app = FastAPI()
 
 app.include_router(report.router)
 app.include_router(emergency.router)
+app.include_router(findNearest.router)
 app.include_router(alerts.router,prefix="/alerts")
 
 @app.on_event("startup")

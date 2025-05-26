@@ -37,7 +37,7 @@ uvicorn main:app --reload
 **4.** Run
 
 ```bash
-python .\telegram-bot.py
+python ./telegram-bot.py
 ```
 
 to start the bot ( make sure api and bot are running inside venev and separate terminals to handle logs separately.)
