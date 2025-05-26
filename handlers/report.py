@@ -10,7 +10,7 @@ supabase = create_supabase_client()
 @router.post("/report")
 def report_incident(incident: Incident):
     try:
-        response = (supabase.table("incidents").insert({"id":int(incident.user_id),"location":incident.location,"description":incident.description}).execute())
+        response = (supabase.table("incidents").insert({"user_id":int(incident.user_id),"location":incident.location,"description":incident.description}).execute())
         return {"status": "success", "data": response}
     except Exception as e:
         print("Exception ",e)

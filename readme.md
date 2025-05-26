@@ -33,6 +33,7 @@ uvicorn main:app --reload
 ```
 
 **3.** Access the interactive API docs at: localhost:8000/docs
+
 **4.** Run
 
 ```bash
