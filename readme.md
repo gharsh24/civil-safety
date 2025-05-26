@@ -33,7 +33,11 @@ uvicorn main:app --reload
 ```
 
 **3.** Access the interactive API docs at: localhost:8000/docs
+**4.** Run ```bash  
+python .\telegram-bot.py
 
+```to start the bot ( make sure api and bot are running inside venev and separate terminals to handle logs separately.)
 Any commit made should include a clear and concise message summarizing:
 
 The purpose of the changes and a brief overview of what was modified or added.
+```

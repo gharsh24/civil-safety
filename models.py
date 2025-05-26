@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 class Incident(BaseModel):
-    user_id: str
+    user_id: int
     # type: str
     location: str
     # lat: Optional[float] = None
