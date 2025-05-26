@@ -3,12 +3,16 @@ import aiohttp
 import asyncio
 import os
 from dotenv import load_dotenv
+from .emergency import send_telegram_alert
+from db.supabase import create_supabase_client
+
 
 load_dotenv()
 
 API_KEY = os.getenv("OPEN_WEATHER_KEY")
 
 router = APIRouter()
+supabase = create_supabase_client()
 
 LAT, LON = 39.7684, -86.1581 # Indy ke fix coordinates
 
@@ -29,6 +33,7 @@ WIND_GUST_WARNING = 25.9
 
 async def check_emergency(data):
     emergencies = []
+    #emergencies.append("Heat Warning")
     
     main = data.get("main", {})
     wind = data.get("wind", {})
@@ -66,7 +71,15 @@ async def fetch_weather():
                 return {}
 
 async def send_alert(emergencies):
-    print(f"🚨 Emergency Alert! {', '.join(emergencies)}")
+    alert_type=" , ".join(emergencies)
+    location="Indianpolis, IN"
+    message="Automatically detected from weather services"
+
+    #fetch users from db
+    users=supabase.table("users").select("chat_id").eq("is_admin",False).execute()
+    chat_ids=[user["chat_id"] for user in users.data]
+
+    await send_telegram_alert(alert_type,location,message,chat_ids)
     # Add tele notification logic here
 
 async def poll_weather(): #Check every 2 min for weather updates and if emergency found report it to tele
@@ -80,7 +93,7 @@ async def poll_weather(): #Check every 2 min for weather updates and if emergenc
                     await send_alert(emergencies)
         except Exception as e:
             print("Polling error:", e)
-        await asyncio.sleep(120)  # Wait 2 min maybe change later as per demands
+        await asyncio.sleep(6000)  # Wait 2 min(120) maybe change later as per demands currenly i am setting large no to prevent reduncdant checks and save bankrupcy by api calls
 
 
 

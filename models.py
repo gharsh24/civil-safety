@@ -11,4 +11,6 @@ class Incident(BaseModel):
 
 class BroadcastRequest(BaseModel):
     # sender_chat_id: str
+    alert_type:str # e.g. Heat Warning , Wind Adviosry , Thunderstorm
+    location: str
     message: str
