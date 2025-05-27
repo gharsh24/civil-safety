@@ -44,3 +44,9 @@ to start the bot ( make sure api and bot are running inside venev and separate t
 Any commit made should include a clear and concise message summarizing:
 
 The purpose of the changes and a brief overview of what was modified or added.
+
+
+## todo
+1. Indy 4-5 lat , lon @neeraj
+2. Markdown in bot ***
+3. Images in report @harsh 
