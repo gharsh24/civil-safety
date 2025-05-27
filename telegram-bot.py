@@ -207,7 +207,7 @@ async def ask_receive_question(update: Update, context: ContextTypes.DEFAULT_TYP
             res.raise_for_status()
             data = res.json()
             answer = data.get("answer", "❌ No response received.")
-            await update.message.reply_text(f"🤖 {answer}")
+            await update.message.reply_text(f"🤖\n  {answer}",parse_mode="Markdown")
     except Exception as e:
         await update.message.reply_text(f"⚠️ Error fetching reply: {str(e)}")
 

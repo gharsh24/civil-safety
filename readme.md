@@ -48,5 +48,4 @@ The purpose of the changes and a brief overview of what was modified or added.
 
 ## todo
 1. Indy 4-5 lat , lon @neeraj
-2. Markdown in bot ***
-3. Images in report @harsh 
+2. Images in report @harsh 
