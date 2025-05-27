@@ -15,8 +15,14 @@ load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 REPORT_API_ENDPOINT = "http://localhost:8000/report"  # FastAPI POST /report
 HELP_API_ENDPOINT = "http://localhost:8000/find-help"  # FastAPI POST /report
+EMERGENCY_CONTACTS_API = "http://localhost:8000/emergency-contacts" # its a get
 LOCATION, DESCRIPTION = range(2)
 FIND_LOCATION, HELP_TYPE = range(2, 4)  # Continue from previous states
+HELP_TYPE_MAP = {
+    "1": "police",
+    "2": "hospitals",
+    "3": "fire stations"
+}
 
 
 # /start command
@@ -87,17 +93,27 @@ async def receive_find_location(update: Update, context: ContextTypes.DEFAULT_TY
         context.user_data["find_location"] = update.message.text
 
     await update.message.reply_text(
-        "🔍 What kind of help do you need?\nType one of: police , hospitals, fire stations"
-    )
+    "🔍 What kind of help do you need?\n"
+    "Type the number:\n"
+    "1 - Police\n"
+    "2 - Hospitals\n"
+    "3 - Fire stations"
+)
     return HELP_TYPE
 
 # Handle help type selection
 async def receive_help_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    help_type = update.message.text.lower()
+    # help_type = update.message.text.lower()
     location = context.user_data["find_location"]
 
-    if help_type not in ["police", "hospitals", "fire stations"]:
-        await update.message.reply_text("❌ Please choose one of: police , hospitals, fire stations")
+    # if help_type not in ["police", "hospitals", "fire stations"]:
+    #     await update.message.reply_text("❌ Please choose one of: police , hospitals, fire stations")
+    #     return HELP_TYPE
+    help_type_input = update.message.text.strip()
+    help_type = HELP_TYPE_MAP.get(help_type_input)
+
+    if not help_type:
+        await update.message.reply_text("❌ Please type 1, 2, or 3 to select the help type.")
         return HELP_TYPE
 
     try:
@@ -116,6 +132,15 @@ async def receive_help_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             response.raise_for_status()
             results = response.json()
+            
+            # Call emergency contacts API
+            lat, lon = map(float, location.split(","))
+            emer_response = await client.get(
+                EMERGENCY_CONTACTS_API,
+                params={"lat": lat, "lon": lon}
+            )
+            emer_response.raise_for_status()
+            emer_data = emer_response.json()
 
         print("response ",response)
         print("received list ", results)
@@ -131,6 +156,21 @@ async def receive_help_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f"   Latitude: {item['latitude']}\n"
                 f"   Longitude: {item['longitude']}\n\n"
             )
+         # Emergency contacts formatting
+        contacts = emer_data.get("emergency_contacts", {})
+        country = emer_data.get("country", "Unknown")
+
+        emergency_text = f"\n🚨 Emergency Numbers in {country}:\n"
+        if contacts.get("police"):
+            emergency_text += f"👮 Police: {', '.join(contacts['police'])}\n"
+        if contacts.get("ambulance"):
+            emergency_text += f"🚑 Ambulance: {', '.join(contacts['ambulance'])}\n"
+        if contacts.get("dispatch"):
+            emergency_text += f"📞 Dispatch: {', '.join(contacts['dispatch'])}\n"
+        if not any([contacts.get("police"), contacts.get("ambulance"), contacts.get("dispatch")]):
+            emergency_text += "No emergency contacts found.\n"
+
+        response_text += emergency_text
 
         await update.message.reply_text(response_text)
 
