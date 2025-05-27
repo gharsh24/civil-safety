@@ -18,7 +18,7 @@ HELP_API_ENDPOINT = "http://localhost:8000/find-help"  # FastAPI POST /report
 EMERGENCY_CONTACTS_API = "http://localhost:8000/emergency-contacts" # its a get
 ASK_API_ENDPOINT = "http://localhost:8000/ask"  # FastAPI POST /ask mistral ai endpoint use carefully not to exploit api limits
 LOCATION, DESCRIPTION = range(2)
-ASK_QUESTION = 4  
+ASK_QUESTION = 5 
 FIND_LOCATION, HELP_TYPE = range(2, 4)  # Continue from previous states
 HELP_TYPE_MAP = {
     "1": "police",
