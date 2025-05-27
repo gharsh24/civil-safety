@@ -18,3 +18,6 @@ class BroadcastRequest(BaseModel):
 class HelpRequest(BaseModel):
     location: str  # e.g. "28.6139,77.2090"
     help_type: str  # e.g. "police station"
+
+class ChatRequest(BaseModel):
+    query: str

@@ -16,7 +16,9 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 REPORT_API_ENDPOINT = "http://localhost:8000/report"  # FastAPI POST /report
 HELP_API_ENDPOINT = "http://localhost:8000/find-help"  # FastAPI POST /report
 EMERGENCY_CONTACTS_API = "http://localhost:8000/emergency-contacts" # its a get
+ASK_API_ENDPOINT = "http://localhost:8000/ask"  # FastAPI POST /ask mistral ai endpoint use carefully not to exploit api limits
 LOCATION, DESCRIPTION = range(2)
+ASK_QUESTION = 4  
 FIND_LOCATION, HELP_TYPE = range(2, 4)  # Continue from previous states
 HELP_TYPE_MAP = {
     "1": "police",
@@ -187,6 +189,32 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("❌ Ongoing action cancelled.")
     return ConversationHandler.END
 
+
+
+# /ask command entry — bot asks user to type question
+async def ask_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("💬 Please type your safety question:")
+    return ASK_QUESTION
+
+# Receive user question, call API and reply
+async def ask_receive_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.message.text
+
+    payload = {"query": query}
+    try:
+        async with httpx.AsyncClient() as client:
+            res = await client.post(ASK_API_ENDPOINT, json=payload)
+            res.raise_for_status()
+            data = res.json()
+            answer = data.get("answer", "❌ No response received.")
+            await update.message.reply_text(f"🤖 {answer}")
+    except Exception as e:
+        await update.message.reply_text(f"⚠️ Error fetching reply: {str(e)}")
+
+    return ConversationHandler.END
+
+
+
 # Main bot runner
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -215,6 +243,17 @@ def main():
         fallbacks=[CommandHandler("cancel", cancel)],
     )
     app.add_handler(find_conv)
+    
+    ask_conv = ConversationHandler(
+    entry_points=[CommandHandler("ask", ask_start)],
+    states={
+        ASK_QUESTION: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_receive_question)],
+    },
+    fallbacks=[CommandHandler("cancel", cancel)],
+)
+
+    app.add_handler(ask_conv)
+
 
 
     print("🤖 Bot is running...")

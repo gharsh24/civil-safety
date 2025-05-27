@@ -14,5 +14,5 @@ async def startup_event():
     import asyncio
     asyncio.create_task(alerts.poll_weather())
 
-# app.include_router(education.router)
+app.include_router(education.router)
 # app.include_router(resources.router)
