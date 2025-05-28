@@ -1,6 +1,6 @@
 # main.py
 from fastapi import FastAPI
-from handlers import report, alerts, education, resources,emergency,isAdmin,findNearest  # import all route modules
+from handlers import report, alerts, education, resources,emergency,isAdmin,findNearest,quiz  # import all route modules
 
 app = FastAPI()
 
@@ -15,4 +15,5 @@ async def startup_event():
     asyncio.create_task(alerts.poll_weather())
 
 app.include_router(education.router)
+app.include_router(quiz.router)
 # app.include_router(resources.router)

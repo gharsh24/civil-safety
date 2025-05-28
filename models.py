@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional,List
 
 class Incident(BaseModel):
     user_id: int
@@ -21,3 +21,11 @@ class HelpRequest(BaseModel):
 
 class ChatRequest(BaseModel):
     query: str
+
+class QuizItem(BaseModel):
+    question: str
+    options: List[str]
+    correct_option_index: int
+
+class QuizItemList(BaseModel):
+    items: List[QuizItem]

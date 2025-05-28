@@ -1,6 +1,6 @@
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
 import os
-from telegram import Update
+from telegram import Update , Poll
 from telegram.ext import Updater, CommandHandler
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes,
@@ -9,6 +9,8 @@ from telegram.ext import (
 from dotenv import load_dotenv
 import requests
 import httpx
+import json
+import random
 
 load_dotenv()
 
@@ -17,8 +19,11 @@ REPORT_API_ENDPOINT = "http://localhost:8000/report"  # FastAPI POST /report
 HELP_API_ENDPOINT = "http://localhost:8000/find-help"  # FastAPI POST /report
 EMERGENCY_CONTACTS_API = "http://localhost:8000/emergency-contacts" # its a get
 ASK_API_ENDPOINT = "http://localhost:8000/ask"  # FastAPI POST /ask mistral ai endpoint use carefully not to exploit api limits
+QUIZ_FILE="quiz_cache.json"
 LOCATION, DESCRIPTION = range(2)
 ASK_QUESTION = 5 
+QUIZ_QUESTION=10
+QUIZ_ANSWER=11 
 FIND_LOCATION, HELP_TYPE = range(2, 4)  # Continue from previous states
 HELP_TYPE_MAP = {
     "1": "police",
@@ -213,7 +218,71 @@ async def ask_receive_question(update: Update, context: ContextTypes.DEFAULT_TYP
 
     return ConversationHandler.END
 
+def load_questions():
+    with open(QUIZ_FILE, "r") as f:
+        data = json.load(f)
+    # Extract the list of questions from "items" key
+    questions = data.get("items", [])
+    return questions
 
+
+async def start_quiz(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    questions = load_questions()
+    if not questions:
+        await update.message.reply_text("No quiz questions available.")
+        return ConversationHandler.END
+
+    context.user_data['quiz_questions'] = questions
+    context.user_data['quiz_index'] = 0
+    context.user_data['score'] = 0
+
+    question_data = questions[0]
+    question_text = question_data["question"]
+    options = question_data["options"]
+    options_text = "\n".join(f"{i+1}. {opt}" for i, opt in enumerate(options))
+
+    await update.message.reply_text(f"\n\n {question_text}\n\nOptions:\n{options_text}\n\nPlease type the number of your answer.")
+
+    return QUIZ_ANSWER
+
+async def quiz_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_answer = update.message.text.strip()
+
+    if not user_answer.isdigit():
+        await update.message.reply_text("Please reply with a valid option number.")
+        return QUIZ_ANSWER
+
+    user_answer = int(user_answer) - 1  # zero-based index
+    questions = context.user_data['quiz_questions']
+    index = context.user_data['quiz_index']
+    current_question = questions[index]
+
+    correct_index = current_question['correct_option_index']
+
+    if user_answer == correct_index:
+        context.user_data['score'] += 1
+        await update.message.reply_text("✅ Correct!")
+    else:
+        correct_answer = current_question['options'][correct_index]
+        await update.message.reply_text(f"❌ Wrong!\n The correct answer was: {correct_answer}")
+
+    # Move to next question
+    context.user_data['quiz_index'] += 1
+    if context.user_data['quiz_index'] >= len(questions):
+        # Quiz finished
+        score = context.user_data['score']
+        total = len(questions)
+        await update.message.reply_text(f"🏁 Quiz completed! Your score: {score}/{total}")
+        return ConversationHandler.END
+    else:
+        # Send next question
+        next_question = questions[context.user_data['quiz_index']]
+        question_text = next_question["question"]
+        options = next_question["options"]
+        options_text = "\n".join(f"{i+1}. {opt}" for i, opt in enumerate(options))
+
+        await update.message.reply_text(f"{question_text}\n\nOptions:\n{options_text}\n\nPlease type the number of your answer.")
+        return QUIZ_ANSWER
 
 # Main bot runner
 def main():
@@ -253,6 +322,16 @@ def main():
 )
 
     app.add_handler(ask_conv)
+
+    quiz_conv = ConversationHandler(
+        entry_points=[CommandHandler("quiz", start_quiz)],
+        states={
+            QUIZ_ANSWER: [MessageHandler(filters.TEXT & ~filters.COMMAND, quiz_answer)],
+        },
+        fallbacks=[CommandHandler("cancel", cancel)],
+    )
+
+    app.add_handler(quiz_conv)
 
 
 

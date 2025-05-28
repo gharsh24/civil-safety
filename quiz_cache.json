@@ -1,0 +1,105 @@
+{
+  "date": "2025-05-28",
+  "items": [
+    {
+      "question": "What is the first step you should take in case of a fire emergency?",
+      "options": [
+        "Try to put out the fire yourself",
+        "Call emergency services immediately",
+        "Hide in a closet",
+        "Ignore it and hope it goes away"
+      ],
+      "correct_option_index": 1
+    },
+    {
+      "question": "During an earthquake, what is the safest action to take indoors?",
+      "options": [
+        "Run outside immediately",
+        "Stand in a doorway",
+        "Drop, cover, and hold on under a sturdy piece of furniture",
+        "Climb to the highest floor"
+      ],
+      "correct_option_index": 2
+    },
+    {
+      "question": "What should you do if you encounter a suspicious package in a public place?",
+      "options": [
+        "Open it to inspect the contents",
+        "Move it to a less crowded area",
+        "Report it to authorities and evacuate the area",
+        "Ignore it and walk away"
+      ],
+      "correct_option_index": 2
+    },
+    {
+      "question": "In the event of a chemical spill, what is the best immediate action?",
+      "options": [
+        "Attempt to clean it up yourself",
+        "Evacuate the area and alert emergency services",
+        "Stay close to observe the situation",
+        "Use water to dilute the chemical"
+      ],
+      "correct_option_index": 1
+    },
+    {
+      "question": "What is the recommended way to evacuate a building during a fire?",
+      "options": [
+        "Use the elevator to exit quickly",
+        "Stay low to avoid smoke and use the stairs",
+        "Jump out of the nearest window",
+        "Wait for someone to rescue you"
+      ],
+      "correct_option_index": 1
+    },
+    {
+      "question": "During a severe storm, what is the safest place to take shelter?",
+      "options": [
+        "Under a tree",
+        "In a basement or an interior room on the lowest level",
+        "Near windows to monitor the storm",
+        "In a car parked outside"
+      ],
+      "correct_option_index": 1
+    },
+    {
+      "question": "What should you do if you are trapped in a vehicle submerged in water?",
+      "options": [
+        "Wait for the vehicle to fill with water before attempting to open the door",
+        "Try to break the window immediately to escape",
+        "Call for help and stay inside the vehicle",
+        "Attempt to start the engine and drive out"
+      ],
+      "correct_option_index": 1
+    },
+    {
+      "question": "How should you respond if you see someone experiencing a sudden cardiac arrest?",
+      "options": [
+        "Wait for them to recover on their own",
+        "Call emergency services and start CPR if trained",
+        "Give them water to drink",
+        "Shake them vigorously to wake them up"
+      ],
+      "correct_option_index": 1
+    },
+    {
+      "question": "What is the best way to prepare for a potential emergency at home?",
+      "options": [
+        "Ignore the possibility of emergencies",
+        "Create an emergency kit and a family emergency plan",
+        "Rely solely on emergency services to handle everything",
+        "Keep all important documents in one place without backup"
+      ],
+      "correct_option_index": 1
+    },
+    {
+      "question": "What should you do if you are caught in a riot or civil unrest?",
+      "options": [
+        "Join the crowd to understand the situation better",
+        "Stay calm, find a safe exit, and leave the area immediately",
+        "Confront the people causing the disturbance",
+        "Take photos and videos to post on social media"
+      ],
+      "correct_option_index": 1
+    }
+  ]
+}
