@@ -12,12 +12,15 @@ supabase = create_supabase_client()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")  # Telegram bot token
 bot = Bot(token=BOT_TOKEN)
+ADMIN_KEY=os.getenv("ADMIN_KEY")
 
 
 
 @router.post("/broadcast-alert") 
 async def broadcast_alert(data: BroadcastRequest):
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    if data.admin_key !=ADMIN_KEY:
+         raise HTTPException(status_code=403, detail="Invalid Admin key")
     
     msg = (
         f"🚨 *{data.alert_type}*\n\n"
