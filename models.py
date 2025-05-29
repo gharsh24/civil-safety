@@ -8,6 +8,7 @@ class Incident(BaseModel):
     # lat: Optional[float] = None
     # lon: Optional[float] = None
     description: str
+    photo_url: str 
 
 class BroadcastRequest(BaseModel):
     # sender_chat_id: str

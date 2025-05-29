@@ -1,5 +1,6 @@
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
 import os
+from db.supabase import create_supabase_client
 from telegram import Update , Poll
 from telegram.ext import Updater, CommandHandler
 from telegram.ext import (
@@ -21,6 +22,7 @@ EMERGENCY_CONTACTS_API = "http://localhost:8000/emergency-contacts" # its a get
 ASK_API_ENDPOINT = "http://localhost:8000/ask"  # FastAPI POST /ask mistral ai endpoint use carefully not to exploit api limits
 QUIZ_FILE="quiz_cache.json"
 LOCATION, DESCRIPTION = range(2)
+PHOTO =2
 ASK_QUESTION = 5 
 QUIZ_QUESTION=10
 QUIZ_ANSWER=11 
@@ -62,16 +64,42 @@ async def receive_location(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Receive description and send to FastAPI
 async def receive_description(update: Update, context: ContextTypes.DEFAULT_TYPE):
     description = update.message.text
-    location = context.user_data["location"]
-    user_id = update.effective_user.id
-    payload = {
-        "user_id": user_id,
-        "location": location,
-        "description": description,
+    context.user_data["description"] = description
+    await update.message.reply_text("📸 Please send a photo of the incident.")
+    return PHOTO
+
+#receive photo
+async def receive_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    supabase = create_supabase_client()
+    if not update.message.photo:
+        await update.message.reply_text(" No photo found. Please send a photo.")
+        return PHOTO
+    photo = update.message.photo[-1]  # get the best quality photo
+    photo_file = await photo.get_file()
+    photo_bytes = await photo_file.download_as_bytearray()
+
+    file_path = f"incident_photos/{update.effective_user.id}_{photo.file_unique_id}.jpg"
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+    with open(file_path, "wb") as f:
+        f.write(photo_bytes)
+
+    supabase.storage.from_("incident-images").upload(file_path, file_path, {"content-type": "image/jpeg"})
+
+    # Get public URL
+    photo_url = supabase.storage.from_("incident-images").get_public_url(file_path)
+
+    # Store incident report in Supabase
+    data = {
+        "user_id": update.effective_user.id,
+        "location": context.user_data["location"],
+        "description": context.user_data["description"],
+        "photo_url": photo_url
     }
+    print(data)
 
     try:
-        res = requests.post(REPORT_API_ENDPOINT, json=payload)
+        res = requests.post(REPORT_API_ENDPOINT, json=data)
         if res.status_code == 200:
             await update.message.reply_text("✅ Incident reported successfully. Thanks for being a good responsible citizen 🏅")
         else:
@@ -80,7 +108,6 @@ async def receive_description(update: Update, context: ContextTypes.DEFAULT_TYPE
         await update.message.reply_text("❌ Error occurred while reporting.")
 
     return ConversationHandler.END
-
 
 # Start /find conversation
 async def start_find(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -297,6 +324,8 @@ def main():
         states={
             LOCATION: [MessageHandler(filters.LOCATION, receive_location)],
             DESCRIPTION: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_description)],
+            PHOTO: [MessageHandler(filters.PHOTO, receive_photo)],
+            
         },
         fallbacks=[CommandHandler("cancel", cancel)],
     )
