@@ -1,6 +1,6 @@
-# Civil Safety - Telegram Safety Bot 🚨
+# Civil Safety - Telegram Safety Bot (INDY WATCH DOG)🚨
 
-Welcome to **Civil Safety**, a Telegram bot designed to enhance citizen safety during emergencies. Built as part of a hackathon, this bot provides real-time assistance, emergency resource locating, incident reporting, and safety education through an accessible and user-friendly platform.
+Welcome to **INDY WATCH DOG**, a Telegram bot designed to enhance citizen safety during emergencies. Built as part of a hackathon, this bot provides real-time assistance, emergency resource locating, incident reporting, and safety education through an accessible and user-friendly platform.
 
 ## 📖 Overview
 
