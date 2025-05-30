@@ -12,7 +12,7 @@ KEY = os.getenv("MISTRAL_API_KEY")
 CACHE_FILE = "quiz_cache.json"
 
 PROMPT = """
-Generate 10 multiple-choice quiz questions in JSON format for a Safety Hackathon Quiz. Each question should focus on public safety, in events of emergency what to do, good practices in emergency , how to be vigilant and be good citizen in difficult situations . For each item, provide:
+Generate 10 multiple-choice quiz questions in JSON format for a Safety Hackathon Quiz. Each question should focus on public safety, in events of emergency what to do, good practices in emergency. For each item, provide:
 
 question: A clear, relevant question
 
