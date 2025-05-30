@@ -15,6 +15,7 @@ class BroadcastRequest(BaseModel):
     alert_type:str # e.g. Heat Warning , Wind Adviosry , Thunderstorm
     location: str
     message: str
+    admin_key:str
 
 class HelpRequest(BaseModel):
     location: str  # e.g. "28.6139,77.2090"
