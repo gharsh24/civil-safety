@@ -16,10 +16,10 @@ import random
 load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-REPORT_API_ENDPOINT = "http://localhost:8000/report"  # FastAPI POST /report
-HELP_API_ENDPOINT = "http://localhost:8000/find-help"  # FastAPI POST /report
-EMERGENCY_CONTACTS_API = "http://localhost:8000/emergency-contacts" # its a get
-ASK_API_ENDPOINT = "http://localhost:8000/ask"  # FastAPI POST /ask mistral ai endpoint use carefully not to exploit api limits
+REPORT_API_ENDPOINT = os.getenv("REPORT_API_ENDPOINT")  # FastAPI POST /report
+HELP_API_ENDPOINT = os.getenv("HELP_API_ENDPOINT")  # FastAPI POST /report
+EMERGENCY_CONTACTS_API = os.getenv("EMERGENCY_CONTACTS_API") # its a get
+ASK_API_ENDPOINT = os.getenv("ASK_API_ENDPOINT")  # FastAPI POST /ask mistral ai endpoint use carefully not to exploit api limits
 QUIZ_FILE="quiz_cache.json"
 LOCATION, DESCRIPTION = range(2)
 PHOTO =2
