@@ -3,7 +3,7 @@ name: Deploy to Render
 on:
   push:
     branches:
-      - main  # change if your default branch is different
+      - main 
 
 jobs:
   deploy:
