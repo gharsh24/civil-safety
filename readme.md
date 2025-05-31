@@ -52,7 +52,7 @@ uvicorn main:app --reload
 4. **Run the Telegram bot**:
 
 ```bash
-python ./telegram-bot.py
+python ./telegram_bot.py
 ```
 
 **Note**: Ensure the API and bot are running inside the virtual environment in separate terminals to handle logs separately.

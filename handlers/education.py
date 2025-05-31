@@ -16,7 +16,7 @@ async def ask_mistral(request: ChatRequest):
     }
 
     payload = {
-        "model": "mistral-small-2503",  
+        "model": "mistral-small",  
         "messages": [
             {
                 "role": "system",
