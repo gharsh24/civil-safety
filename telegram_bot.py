@@ -16,10 +16,26 @@ import random
 load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-REPORT_API_ENDPOINT = os.getenv("REPORT_API_ENDPOINT")  # FastAPI POST /report
-HELP_API_ENDPOINT = os.getenv("HELP_API_ENDPOINT")  # FastAPI POST /report
-EMERGENCY_CONTACTS_API = os.getenv("EMERGENCY_CONTACTS_API") # its a get
-ASK_API_ENDPOINT = os.getenv("ASK_API_ENDPOINT")  # FastAPI POST /ask mistral ai endpoint use carefully not to exploit api limits
+# REPORT_API_ENDPOINT = os.getenv("REPORT_API_ENDPOINT")  # FastAPI POST /report
+# HELP_API_ENDPOINT = os.getenv("HELP_API_ENDPOINT")  # FastAPI POST /report
+# EMERGENCY_CONTACTS_API = os.getenv("EMERGENCY_CONTACTS_API") # its a get
+# ASK_API_ENDPOINT = os.getenv("ASK_API_ENDPOINT")  # FastAPI POST /ask mistral ai endpoint use carefully not to exploit api limits
+
+def resolve_env_url(key, default_path):
+    """
+    Replace `$PORT` in the env value with actual runtime port.
+    Fallback to localhost:8000 if not set.
+    """
+    port = os.getenv("PORT", "8000")  # Render sets this dynamically
+    url = os.getenv(key, f"http://localhost:{port}{default_path}")
+    return url.replace("$PORT", port)
+
+REPORT_API_ENDPOINT = resolve_env_url("REPORT_API_ENDPOINT", "/report")
+HELP_API_ENDPOINT = resolve_env_url("HELP_API_ENDPOINT", "/help")
+EMERGENCY_CONTACTS_API = resolve_env_url("EMERGENCY_CONTACTS_API", "/emergency-contacts")
+ASK_API_ENDPOINT = resolve_env_url("ASK_API_ENDPOINT", "/ask")
+
+
 QUIZ_FILE="quiz_cache.json"
 LOCATION, DESCRIPTION = range(2)
 PHOTO =2
